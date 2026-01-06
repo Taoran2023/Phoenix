@@ -99,10 +99,14 @@ class TiltHardware(TiltControllerBase):
             if motor_speed >= 127: 
                 motor_speed = 126 # weird bug not sure why this is needed
             self.rc.ForwardM2(self.address, motor_speed)
+            self.rc.ForwardM1(self.address, motor_speed)
+
         else:
             if motor_speed >= 127:
                 motor_speed = 126
             self.rc.BackwardM2(self.address, motor_speed)
+            self.rc.BackwardM2(self.address, motor_speed)
+
 
     def on_shutdown(self):
         self.stop()
@@ -118,13 +122,22 @@ class TiltHardware(TiltControllerBase):
         enc_count = self.rc.ReadEncM2(self.address)
         self.tilt_angle =  float(interp(enc_count[1],self.encoder_data,self.angle_data))
         print(f"tilt angle is: {rad2deg(self.tilt_angle)}")
-        # print(f"encoder count is: {enc_count}")
+        print(f"encoder count is: {enc_count}")
         return self.tilt_angle
 
     def update(self):
         if (self.manual):
             # manual control of tilt angle
+            # self.LS_in = self.LS_in + 5
+            # if self.LS_in > max:
+            #     self.LS_in = max
+            self.LS_in = dead - 70
+
+
             u = self.normalize(self.LS_in)
+            # print(f"tilt u is: {u}")
+
+            # u = 0.5
             self.spin_motor(u)
         else:
             self.spin_motor(self.tilt_vel)

@@ -52,9 +52,17 @@ params_['takeoff_height']        = -1.0                           # height at wh
 params_['z0']                    = -0.16                        
 params_['zf']                    = -0.30
 
-# Roboclaw addresses
-params_['tilt_roboclaw_address']         = "/dev/ttyACM1"
-params_['drive_roboclaw_address']        = "/dev/ttyACM0"
+# Roboclaw and Dynamixel addresses
+# params_['tilt_roboclaw_address']         = "/dev/ttyACM1"
+params_['tilt_roboclaw_address']        = "/dev/ttyACM0"  #for leptop testing
+# params_['drive_roboclaw_address']        = "/dev/ttyACM0"
+params_['drive_dynamixel_address']      = "/dev/ttyUSB0"  #dynamixel
+params_['left_dxl_id']                  = 0  #dynamixel
+params_['right_dxl_id']                 = 1  #dynamixel
+
+params_['torque_on_address'] = 64
+params_['goal_velocity_address'] = 104 
+
 
 # kinematic driving parameters
 params_['wheel_base']                    = 0.135      # half the distance between the wheels
@@ -64,7 +72,7 @@ params_['max_drive_speed']               = params_.get('wheel_radius') * params_
 params_['max_turn_speed']                = params_.get('wheel_radius') * params_.get('max_wheel_angular_velocity') / params_.get('wheel_base')   # rad/s
 
 # MPC parameters
-params_['acados_ocp_path']       = getenv("ATMO") +'/atmo_ws/src/atmo/atmo/mpc/acados/'                  # path that acados model is compiled to
+# params_['acados_ocp_path']       = getenv("ATMO") +'/atmo_ws/src/atmo/atmo/mpc/acados/'                  # path that acados model is compiled to
 params_['generate_mpc']          = True                                                                  # generate acados model
 params_['build_mpc']             = True                                                                  # build acados model
 params_['cost_update_freq']      = 10 * params_.get('Ts')                                                # frequency at which cost is updated (seconds)
@@ -72,9 +80,9 @@ params_['N_horizon']             = 10
 params_['T_horizon']             = 1.2
 
 # MPC constraints
-params_['u_max']            = 1.0
-params_['v_max_absolute']   = (np.pi/2)/4
-params_['T_max']            = 4*params_['kT']
+# params_['u_max']            = 1.0
+# params_['v_max_absolute']   = (np.pi/2)/4
+# params_['T_max']            = 4*params_['kT']
 
 # cost function parameters
 params_['w_x']        = 1.0     
@@ -174,3 +182,8 @@ params_['r_AG_right_z']     = -0.02495
 params_['r_AR1_x']          = 0.16491
 params_['r_AR1_y']          = 0.13673
 params_['r_AR1_z']          = -0.069563
+
+# mpc param moveto here,Taoran
+params_['u_max']            = 1.0
+params_['v_max_absolute']   = (np.pi/2)/4
+params_['T_max']            = 4*params_['kT']

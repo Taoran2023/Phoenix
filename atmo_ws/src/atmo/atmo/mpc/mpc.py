@@ -32,7 +32,7 @@ def create_ocp_solver_description() -> AcadosOcp:
     # create ocp object to formulate the OCP
     ocp = AcadosOcp()
 
-    model = export_robot_model())
+    model = export_robot_model()
 
     ocp.model = model
     nx = model.x.size()[0]
