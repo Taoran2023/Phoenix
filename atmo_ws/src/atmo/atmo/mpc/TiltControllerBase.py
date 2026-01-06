@@ -45,10 +45,10 @@ class TiltControllerBase(Node,ABC):
         self.reset_encoder_trigger()
   
         # get current tilt angle 
-        tilt_angle = self.get_current_tilt_angle()
+        tilt_angle1, tilt_angle2 = self.get_current_tilt_angle()
 
         # publish current tilt angle
-        self.publish_tilt_angle(tilt_angle)
+        self.publish_tilt_angle(tilt_angle1)
 
         # use tilt_vel callback/rc_input to control tilt angle
         self.update() 

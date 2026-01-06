@@ -14,7 +14,9 @@ params_['max_tilt_in_flight']    = np.deg2rad(50)
 params_['max_tilt_on_land']      = np.deg2rad(85)
 
 # RC channels
-params_['tilt_channel']          = 9
+params_['tilt_channel1']          = 9 # add two tilt channal for left and right arm
+params_['tilt_channel2']          = 9
+
 params_['encoder_channel']       = 11
 params_['mpc_channel']           = 7
 params_['offboard_channel']      = 8
