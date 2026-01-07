@@ -17,7 +17,7 @@ from px4_msgs.msg import ActuatorMotors
 
 import numpy as np
 from custom_msgs.msg import LoadCell
-from atmo.mpc.utils import euler_from_quaternion
+from phoenix.mpc.utils import euler_from_quaternion
 
 class LoadCellTest(Node):
     def __init__(self):

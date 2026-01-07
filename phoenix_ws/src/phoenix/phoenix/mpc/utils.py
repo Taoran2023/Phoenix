@@ -1,5 +1,5 @@
 import numpy as np
-from atmo.mpc.parameters import params_
+from phoenix.mpc.parameters import params_
 
 varphi_g      = params_.get('varphi_g')
 l_pivot_wheel = params_.get('l_pivot_wheel')

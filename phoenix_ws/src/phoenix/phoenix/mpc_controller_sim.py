@@ -15,9 +15,9 @@ from px4_msgs.msg import VehicleAttitude
 from px4_msgs.msg import ManualControlSetpoint
 
 # Morphing lander imports
-from atmo.mpc.MPCBase import MPCBase
-from atmo.mpc.parameters import params_
-from atmo.mpc.utils import euler_from_quaternion, drive_mixer
+from phoenix.mpc.MPCBase import MPCBase
+from phoenix.mpc.parameters import params_
+from phoenix.mpc.utils import euler_from_quaternion, drive_mixer
 
 warmup_time    = params_['warmup_time']
 Ts             = params_['Ts']

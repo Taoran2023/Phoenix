@@ -12,8 +12,8 @@ from px4_msgs.msg import VehicleOdometry
 from px4_msgs.msg import ActuatorMotors
 
 # Morphing lander imports
-from atmo.mpc.RLBase    import RLBase
-from atmo.mpc.parameters_rl import params_
+from phoenix.mpc.RLBase    import RLBase
+from phoenix.mpc.parameters_rl import params_
 
 min              = params_.get('min')
 max              = params_.get('max')

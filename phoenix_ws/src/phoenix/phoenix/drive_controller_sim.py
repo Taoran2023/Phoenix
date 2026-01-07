@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 
-from atmo.mpc.DriveControllerBase import DriveControllerBase
+from phoenix.mpc.DriveControllerBase import DriveControllerBase
 
 class DriveControllerSim(DriveControllerBase):
     def __init__(self):

@@ -1,7 +1,7 @@
 from casadi import SX, vertcat, sin, cos, inv, Function, MX
 import numpy as np
 from acados_template import AcadosModel
-from atmo.mpc.parameters import params_
+from phoenix.mpc.parameters import params_
 
 # get robot model parameters 
 gravity              = params_.get('g')                                 

@@ -9,16 +9,17 @@ from rclpy.qos import qos_profile_sensor_data
 from px4_msgs.msg import InputRc
 
 # Morphing Lander imports
-from atmo.mpc.TiltControllerBase import TiltControllerBase
-from atmo.mpc.roboclaw_3 import Roboclaw
-from atmo.mpc.parameters import params_
+from phoenix.mpc.TiltControllerBase import TiltControllerBase
+from phoenix.mpc.roboclaw_3 import Roboclaw
+from phoenix.mpc.parameters import params_
 
 min                    = params_['min']
 max                    = params_['max']
 dead                   = params_['dead']
 Ts                     = params_.get('Ts_tilt_controller')
 tilt_roboclaw_address  = params_.get('tilt_roboclaw_address')
-tilt_channel           = params_.get('tilt_channel')
+tilt_channel1           = params_.get('tilt_channel1')
+tilt_channel2           = params_.get('tilt_channel2')
 encoder_channel        = params_.get('encoder_channel')
 offboard_channel       = params_.get('offboard_channel')
 
@@ -40,7 +41,8 @@ class TiltHardware(TiltControllerBase):
         self.dead = dead 
 
         # Initialize LS_in
-        self.LS_in = dead
+        self.LS_in1 = dead
+        self.LS_in2 = dead
 
         # Manual vs automatic control
         self.manual = True
@@ -51,11 +53,15 @@ class TiltHardware(TiltControllerBase):
         self.rc.Open()
 
         # Set encoder count to zero (always start robot in drive configuration)
+        # M1 left, M2 right
+        self.rc.SetEncM1(self.address,0)
         self.rc.SetEncM2(self.address,0)
         self.reset_encoder = 0
 
         # Set pin functions for motor 2 (M2) to go to zero when it reaches home (limit switch)
-        self.rc.SetPinFunctions(self.address,0x00,0x62,0x62)
+        # seems like here activate S4 and S5, S4 for channal 1, S5 for 2
+        # this line not sure whether it is working, need to use Roboclaw wizard to set pin function(limit both)
+        self.rc.SetPinFunctions(self.address,0x00,0x62,0x62) 
 
         # Encoder data for tilt angle publishing (manually converting between data which was collected for encoder 44 from pololu to encoder 45. I should recalibrate)
         self.encoder_data = array([0,3696,5551,7647,8886,10118,11062,11982,12846,13957,14885,15629,16549,17037,17749,19029,19645,20989,21453,22357,22989,23517,24013,24605,25437,25973,26325])
@@ -66,7 +72,8 @@ class TiltHardware(TiltControllerBase):
 
     def rc_listener_callback(self, msg):
         # https://futabausa.com/wp-content/uploads/2018/09/18SZ.pdf
-        self.LS_in = msg.values[tilt_channel] # corresponds to LS trim selector on futaba T18SZ that I configured in the function menu
+        self.LS_in1 = msg.values[tilt_channel1] # corresponds to LS trim selector on futaba T18SZ that I configured in the function menu
+        self.LS_in2 = msg.values[tilt_channel2] # corresponds to LS trim selector on futaba T18SZ that I configured in the function menu
 
         # reset encoder 
         self.reset_encoder = msg.values[encoder_channel]
@@ -86,7 +93,7 @@ class TiltHardware(TiltControllerBase):
     def stop(self):
         self.rc.ForwardM2(self.address,self.map_speed(0.0))
 
-    def spin_motor(self, tilt_speed):
+    def spin_motor(self, tilt_speed, motor_select):
         # takes in a tilt_speed between -1 and 1 writes the pwm signal to the roboclaw 
 
         # limit speed when reaching the limit tilt angle
@@ -98,14 +105,20 @@ class TiltHardware(TiltControllerBase):
         if (tilt_speed < 0): # go up
             if motor_speed >= 127: 
                 motor_speed = 126 # weird bug not sure why this is needed
-            self.rc.ForwardM2(self.address, motor_speed)
-            self.rc.ForwardM1(self.address, motor_speed)
+
+            if motor_select == 1:
+                self.rc.ForwardM1(self.address, motor_speed)
+            elif motor_select ==2:
+                self.rc.ForwardM2(self.address, motor_speed)
 
         else:
             if motor_speed >= 127:
                 motor_speed = 126
-            self.rc.BackwardM2(self.address, motor_speed)
-            self.rc.BackwardM2(self.address, motor_speed)
+
+            if motor_select == 1:
+                self.rc.BackwardM1(self.address, motor_speed)
+            elif motor_select ==2:
+                self.rc.BackwardM2(self.address, motor_speed)
 
 
     def on_shutdown(self):
@@ -115,32 +128,45 @@ class TiltHardware(TiltControllerBase):
 
     def reset_encoder_trigger(self):
         if (self.reset_encoder == self.max):
+            self.rc.SetEncM1(self.address,0)
             self.rc.SetEncM2(self.address,0)
 
     def get_current_tilt_angle(self):
         # compute and print current tilt angle
-        enc_count = self.rc.ReadEncM2(self.address)
-        self.tilt_angle =  float(interp(enc_count[1],self.encoder_data,self.angle_data))
-        print(f"tilt angle is: {rad2deg(self.tilt_angle)}")
-        print(f"encoder count is: {enc_count}")
-        return self.tilt_angle
+        enc_count1 = self.rc.ReadEncM1(self.address)
+        enc_count2 = self.rc.ReadEncM2(self.address)
+
+        self.tilt_angle1 =  float(interp(enc_count1[1],self.encoder_data,self.angle_data))
+        self.tilt_angle2 =  float(interp(enc_count2[1],self.encoder_data,self.angle_data))
+
+        print(f"tilt angle is: {rad2deg(self.tilt_angle1),rad2deg(self.tilt_angle2) }")
+        print(f"encoder count is: {enc_count1, enc_count2}")
+        return self.tilt_angle1, self.tilt_angle1
 
     def update(self):
         if (self.manual):
             # manual control of tilt angle
-            # self.LS_in = self.LS_in + 5
-            # if self.LS_in > max:
-            #     self.LS_in = max
-            self.LS_in = dead - 70
+            self.LS_in1 = self.LS_in1 + 1
+            if self.LS_in1 > max-200:
+                self.LS_in1 = max-200
 
+            self.LS_in2 = self.LS_in2 + 1
+            if self.LS_in2 > max-200:
+                self.LS_in2 = max-200
+            # self.LS_in1 = dead - 100
+            # self.LS_in2 = dead - 100
 
-            u = self.normalize(self.LS_in)
-            # print(f"tilt u is: {u}")
+            # 1 is left motor 2 is right
+            u1 = self.normalize(self.LS_in1)
+            u2 = self.normalize(self.LS_in2)
+            print(f"tilt u is: {u1}")
 
             # u = 0.5
-            self.spin_motor(u)
+            self.spin_motor(u1,1)
+            self.spin_motor(u2,2)
+
         else:
-            self.spin_motor(self.tilt_vel)
+            self.spin_motor(self.tilt_vel1,1)
 
 def main(args=None):
     rclpy.init(args=args)

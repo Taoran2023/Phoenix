@@ -12,9 +12,9 @@ from px4_msgs.msg import VehicleOdometry
 from px4_msgs.msg import ActuatorMotors
 
 # Morphing lander imports
-from atmo.mpc.MPCBase    import MPCBase
-from atmo.mpc.parameters import params_
-from atmo.mpc.utils      import euler_from_quaternion
+from phoenix.mpc.MPCBase    import MPCBase
+from phoenix.mpc.parameters import params_
+from phoenix.mpc.utils      import euler_from_quaternion
 
 min            = params_.get('min')
 max            = params_.get('max')

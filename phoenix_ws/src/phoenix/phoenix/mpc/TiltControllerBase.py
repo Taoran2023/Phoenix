@@ -10,7 +10,7 @@ from px4_msgs.msg import TiltAngle
 from custom_msgs.msg import TiltVel
 
 # Morphing Lander imports
-from atmo.mpc.parameters import params_
+from phoenix.mpc.parameters import params_
 
 Ts_tilt_controller = params_['Ts_tilt_controller']
 queue_size         = params_['queue_size']

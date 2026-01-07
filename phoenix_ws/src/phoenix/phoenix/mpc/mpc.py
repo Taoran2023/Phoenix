@@ -2,8 +2,8 @@
 from acados_template import AcadosOcp
 import scipy.linalg
 import numpy as np
-from atmo.mpc.parameters import params_
-from atmo.mpc.dynamics import export_robot_model
+from phoenix.mpc.parameters import params_
+from phoenix.mpc.dynamics import export_robot_model
 
 # constraint variables
 u_max                       = params_.get('u_max')

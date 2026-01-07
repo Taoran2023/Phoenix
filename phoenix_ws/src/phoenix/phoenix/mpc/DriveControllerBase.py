@@ -9,7 +9,7 @@ from rclpy.qos import qos_profile_sensor_data
 from custom_msgs.msg import DriveVel
 
 # Morphing Lander imports
-from atmo.mpc.parameters import params_
+from phoenix.mpc.parameters import params_
 
 Ts_drive_controller = params_['Ts_drive_controller']
 

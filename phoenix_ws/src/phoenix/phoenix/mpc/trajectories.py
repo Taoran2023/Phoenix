@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 import numpy as np 
-from atmo.mpc.parameters import params_
+from phoenix.mpc.parameters import params_
 
 # get parameters
 v_max_absolute             = params_.get('v_max_absolute')

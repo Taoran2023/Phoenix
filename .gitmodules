@@ -1,6 +1,6 @@
 [submodule "m4_home/m4_ws/src/px4_msgs"]
 	path = m4_home/m4_ws/src/px4_msgs
 	url = https://github.com/PX4/px4_msgs.git
-[submodule "atmo_ws/src/atmo/atmo/third-party/DynamixelSDK"]
-	path = atmo_ws/src/atmo/atmo/third-party/DynamixelSDK
+[submodule "atmo_ws/src/phoenix/phoenix/third-party/DynamixelSDK"]
+	path = atmo_ws/src/phoenix/phoenix/third-party/DynamixelSDK
 	url = https://github.com/ROBOTIS-GIT/DynamixelSDK.git

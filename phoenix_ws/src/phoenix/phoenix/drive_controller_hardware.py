@@ -5,10 +5,10 @@ from rclpy.qos import qos_profile_sensor_data
 from px4_msgs.msg import InputRc
 
 # roboclaw and jetson
-from atmo.mpc.DriveControllerBase import DriveControllerBase
+from phoenix.mpc.DriveControllerBase import DriveControllerBase
 # from atmo.mpc.roboclaw_3 import Roboclaw
 from dynamixel_sdk import *
-from atmo.mpc.parameters import params_
+from phoenix.mpc.parameters import params_
 
 # get parameters
 min                    = params_.get('min')

@@ -5,8 +5,8 @@ import rclpy
 from numpy import clip,pi,rad2deg
 
 # Morphing Lander imports
-from atmo.mpc.TiltControllerBase import TiltControllerBase
-from atmo.mpc.parameters import params_
+from phoenix.mpc.TiltControllerBase import TiltControllerBase
+from phoenix.mpc.parameters import params_
 
 v_max_absolute = params_['v_max_absolute']
 
