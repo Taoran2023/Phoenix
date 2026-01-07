@@ -56,7 +56,7 @@ params_['zf']                    = -0.30
 
 # Roboclaw and Dynamixel addresses
 # params_['tilt_roboclaw_address']         = "/dev/ttyACM1"
-params_['tilt_roboclaw_address']        = "/dev/ttyACM0"  #for leptop testing
+params_['tilt_roboclaw_address']        = "/dev/ttyACM1"  #for leptop testing
 # params_['drive_roboclaw_address']        = "/dev/ttyACM0"
 params_['drive_dynamixel_address']      = "/dev/ttyUSB0"  #dynamixel
 params_['left_dxl_id']                  = 0  #dynamixel

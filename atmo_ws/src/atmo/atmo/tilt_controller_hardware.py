@@ -60,6 +60,7 @@ class TiltHardware(TiltControllerBase):
 
         # Set pin functions for motor 2 (M2) to go to zero when it reaches home (limit switch)
         # seems like here activate S4 and S5, S4 for channal 1, S5 for 2
+        # this line not sure whether it is working, need to use Roboclaw wizard to set pin function(limit both)
         self.rc.SetPinFunctions(self.address,0x00,0x62,0x62) 
 
         # Encoder data for tilt angle publishing (manually converting between data which was collected for encoder 44 from pololu to encoder 45. I should recalibrate)
@@ -145,13 +146,13 @@ class TiltHardware(TiltControllerBase):
     def update(self):
         if (self.manual):
             # manual control of tilt angle
-            # self.LS_in1 = self.LS_in1 + 1
-            # if self.LS_in1 > max-200:
-            #     self.LS_in1 = max-200
+            self.LS_in1 = self.LS_in1 + 1
+            if self.LS_in1 > max-200:
+                self.LS_in1 = max-200
 
-            # self.LS_in2 = self.LS_in2 + 1
-            # if self.LS_in2 > max-200:
-            #     self.LS_in2 = max-200
+            self.LS_in2 = self.LS_in2 + 1
+            if self.LS_in2 > max-200:
+                self.LS_in2 = max-200
             # self.LS_in1 = dead - 100
             # self.LS_in2 = dead - 100
 

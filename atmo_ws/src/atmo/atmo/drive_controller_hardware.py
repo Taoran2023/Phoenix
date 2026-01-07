@@ -129,21 +129,21 @@ class DriveControllerHardware(DriveControllerBase):
         print("self.manual: ", self.manual)
         if (self.manual):
             # manual control of driving
-            # self.drive_speed_in = self.drive_speed_in + 1
-            # self.turn_speed_in = self.turn_speed_in + 1
-            # if self.drive_speed_in > max:
-            #     self.drive_speed_in = min
-            #     self.turn_speed_in = min
+            self.drive_speed_in = self.drive_speed_in + 1
+            self.turn_speed_in = self.turn_speed_in + 1
+            if self.drive_speed_in > max:
+                self.drive_speed_in = min
+                self.turn_speed_in = min
 
             lin_vel = self.map_speed(self.normalize(self.drive_speed_in))
             ang_vel = self.map_speed(self.normalize(self.turn_speed_in))
 
             self.get_logger().info(f"lin_vel, ang_vel: ({lin_vel},{ang_vel})")
 
-            self.move_right_wheel(lin_vel + ang_vel)
-            self.move_left_wheel(lin_vel - ang_vel)
-            # self.move_right_wheel(lin_vel)
-            # self.move_left_wheel(lin_vel)
+            # self.move_right_wheel(lin_vel + ang_vel)
+            # self.move_left_wheel(lin_vel - ang_vel)
+            self.move_right_wheel(lin_vel)
+            self.move_left_wheel(lin_vel)
         else:
             # automatic control of driving
             lin_vel = -self.map_speed(self.drive_speed)
