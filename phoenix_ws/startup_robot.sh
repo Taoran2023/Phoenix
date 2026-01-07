@@ -17,14 +17,14 @@ tmux select-pane -t 3
 tmux send-keys -t robot:0.3 'cd ..' C-m
 
 # run interfaces
-tmux send-keys -t robot:0.3 './interface.sh' C-m
+# tmux send-keys -t robot:0.3 './interface.sh' C-m
 
 # Select pane 0
 tmux select-pane -t 0
 
 # reset roboclaw
 tmux send-keys -t robot:0.0 './reset_roboclaw.sh' C-m
-tmux send-keys -t robot:0.0 'm4version2' C-m
+tmux send-keys -t robot:0.0 'jetson' C-m
 
 sleep 10
 
