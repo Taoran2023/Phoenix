@@ -85,7 +85,7 @@ class TiltHardware(TiltControllerBase):
             self.manual = True
 
     def normalize(self,LS_in):
-        return (LS_in-self.dead)/(self.max-self.dead)
+        return (float(LS_in)-float(self.dead))/(self.max-self.dead)
 
     def map_speed(self,speed_normalized):
         return int(127*speed_normalized)
@@ -97,9 +97,9 @@ class TiltHardware(TiltControllerBase):
         # takes in a tilt_speed between -1 and 1 writes the pwm signal to the roboclaw 
 
         # limit speed when reaching the limit tilt angle
-        if (self.tilt_angle < self.limit_tilt):
-            if (tilt_speed < 0) : tilt_speed = 0.0
-            else: pass  
+        # if (self.tilt_angle < self.limit_tilt):
+        #     if (tilt_speed < 0) : tilt_speed = 0.0
+        #     else: pass  
 
         motor_speed = self.map_speed(abs(tilt_speed))
         if (tilt_speed < 0): # go up
@@ -146,13 +146,13 @@ class TiltHardware(TiltControllerBase):
     def update(self):
         if (self.manual):
             # manual control of tilt angle
-            self.LS_in1 = self.LS_in1 + 1
-            if self.LS_in1 > max-200:
-                self.LS_in1 = max-200
+            # self.LS_in1 = self.LS_in1 + 1
+            # if self.LS_in1 > max-200:
+            #     self.LS_in1 = max-200
 
-            self.LS_in2 = self.LS_in2 + 1
-            if self.LS_in2 > max-200:
-                self.LS_in2 = max-200
+            # self.LS_in2 = self.LS_in2 + 1
+            # if self.LS_in2 > max-200:
+            #     self.LS_in2 = max-200
             # self.LS_in1 = dead - 100
             # self.LS_in2 = dead - 100
 

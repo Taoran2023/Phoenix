@@ -14,8 +14,8 @@ params_['max_tilt_in_flight']    = np.deg2rad(50)
 params_['max_tilt_on_land']      = np.deg2rad(85)
 
 # RC channels
-params_['tilt_channel1']          = 9 # add two tilt channal for left and right arm
-params_['tilt_channel2']          = 9
+params_['tilt_channel1']          = 5 # add two tilt channal for left and right arm
+params_['tilt_channel2']          = 6
 
 params_['encoder_channel']       = 11
 params_['mpc_channel']           = 7
@@ -59,8 +59,8 @@ params_['zf']                    = -0.30
 params_['tilt_roboclaw_address']        = "/dev/ttyACM1"  #for leptop testing
 # params_['drive_roboclaw_address']        = "/dev/ttyACM0"
 params_['drive_dynamixel_address']      = "/dev/ttyUSB0"  #dynamixel
-params_['left_dxl_id']                  = 0  #dynamixel
-params_['right_dxl_id']                 = 1  #dynamixel
+params_['left_dxl_id']                  = 1  #dynamixel
+params_['right_dxl_id']                 = 2  #dynamixel
 
 params_['torque_on_address'] = 64
 params_['goal_velocity_address'] = 104 
