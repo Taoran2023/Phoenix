@@ -17,6 +17,7 @@ tmux select-pane -t 3
 tmux send-keys -t robot:0.3 'cd ..' C-m
 
 # run interfaces
+# no need for Jetson ARK board
 # tmux send-keys -t robot:0.3 './interface.sh' C-m
 
 # Select pane 0
@@ -35,13 +36,13 @@ tmux send-keys -t robot:0.0 './launch_tilt.sh' C-m
 tmux select-pane -t 2
 
 # launch mpc controller
-tmux send-keys -t robot:0.2 './launch_mpc.sh' C-m
+# tmux send-keys -t robot:0.2 './launch_mpc.sh' C-m
 
 # Select pane 1
 tmux select-pane -t 1
 
 # record.sh
-tmux send-keys -t robot:0.1 './record.sh' C-m
+# tmux send-keys -t robot:0.1 './record.sh' C-m
 
 # Select pane 4
 tmux select-pane -t 4
