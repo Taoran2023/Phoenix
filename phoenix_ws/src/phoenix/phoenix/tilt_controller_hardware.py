@@ -23,6 +23,10 @@ tilt_channel2           = params_.get('tilt_channel2')
 encoder_channel        = params_.get('encoder_channel')
 offboard_channel       = params_.get('offboard_channel')
 
+tilt_switch_channel    = params_.get('tilt_switch_channel')   # = 8 # min disable tilt, max enable tilt
+# drive_switch_channel   = params_.get('drive_switch_channel')  # = 4 # 1514, middle(dead) -> drive mod
+kill_switch_channel    = params_.get('kill_switch_channel')   # = 5 # kill Flymod also kill drive and tilt
+
 class TiltHardware(TiltControllerBase):
     def __init__(self):
         super().__init__()
@@ -43,6 +47,10 @@ class TiltHardware(TiltControllerBase):
         # Initialize LS_in
         self.LS_in1 = dead
         self.LS_in2 = dead
+
+        # Initialize switch_trigger
+        self.tilt_switch_trigger = min   # min -> disarmd
+        self.kill_switch_trigger = max  # kill system
 
         # Manual vs automatic control
         self.manual = True
@@ -75,6 +83,8 @@ class TiltHardware(TiltControllerBase):
         self.LS_in1 = msg.values[tilt_channel1] # corresponds to LS trim selector on futaba T18SZ that I configured in the function menu
         self.LS_in2 = msg.values[tilt_channel2] # corresponds to LS trim selector on futaba T18SZ that I configured in the function menu
 
+        self.tilt_switch_trigger = msg.values[tilt_switch_channel]   # min -> disarmd
+        self.kill_switch_trigger = msg.values[kill_switch_channel]
         # reset encoder 
         self.reset_encoder = msg.values[encoder_channel]
 
@@ -144,29 +154,37 @@ class TiltHardware(TiltControllerBase):
         return self.tilt_angle1, self.tilt_angle1
 
     def update(self):
-        if (self.manual):
-            # manual control of tilt angle
-            # self.LS_in1 = self.LS_in1 + 1
-            # if self.LS_in1 > max-200:
-            #     self.LS_in1 = max-200
+        if(self.tilt_switch_trigger == max and self.kill_switch_trigger == min):
 
-            # self.LS_in2 = self.LS_in2 + 1
-            # if self.LS_in2 > max-200:
-            #     self.LS_in2 = max-200
-            # self.LS_in1 = dead - 100
-            # self.LS_in2 = dead - 100
+            if (self.manual):
+                # manual control of tilt angle
+                # self.LS_in1 = self.LS_in1 + 1
+                # if self.LS_in1 > max-200:
+                #     self.LS_in1 = max-200
 
-            # 1 is left motor 2 is right
-            u1 = self.normalize(self.LS_in1)
-            u2 = self.normalize(self.LS_in2)
-            print(f"tilt u is: {u1}")
+                # self.LS_in2 = self.LS_in2 + 1
+                # if self.LS_in2 > max-200:
+                #     self.LS_in2 = max-200
+                # self.LS_in1 = dead - 100
+                # self.LS_in2 = dead - 100
 
-            # u = 0.5
-            self.spin_motor(u1,1)
-            self.spin_motor(u2,2)
+                # 1 is left motor 2 is right
+                u1 = self.normalize(self.LS_in1)
+                u2 = self.normalize(self.LS_in2)
+                print(f"tilt u is: {u1}")
+
+                # u = 0.5
+                self.spin_motor(u1,1)
+                self.spin_motor(u2,2)
+
+            else:
+
+                self.spin_motor(self.tilt_vel1,1)
 
         else:
-            self.spin_motor(self.tilt_vel1,1)
+            self.spin_motor(0,1)
+            self.spin_motor(0,2)
+            print("disable tilting")
 
 def main(args=None):
     rclpy.init(args=args)

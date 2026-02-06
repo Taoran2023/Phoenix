@@ -20,6 +20,10 @@ pitch_channel          = params_.get('pitch_channel')
 roll_channel           = params_.get('roll_channel')
 offboard_channel       = params_.get('offboard_channel')
 
+# tilt_switch_channel    = params_.get('tilt_switch_channel')   # = 8 # min disable tilt, max enable tilt
+drive_switch_channel   = params_.get('drive_switch_channel')  # = 4 # 1514, middle(dead) -> drive mod
+kill_switch_channel    = params_.get('kill_switch_channel')   # = 5 # kill Flymod also kill drive and tilt
+
 # dynamixel params
 drive_dynamixel_address     = params_.get('drive_dynamixel_address')
 left_dxl_id                 = params_.get('left_dxl_id')
@@ -28,6 +32,10 @@ right_dxl_id                = params_.get('right_dxl_id')
 torque_on_address           = params_.get('torque_on_address')
 goal_velocity_address       = params_.get('goal_velocity_address') 
 data = 1 # enable torque, trigger
+
+# drive_switch_channel == dead and kill_switch_channel != max
+# drive_switch_trigger
+# kill_switch_trigger
 
 class DriveControllerHardware(DriveControllerBase):
     def __init__(self): 
@@ -43,6 +51,10 @@ class DriveControllerHardware(DriveControllerBase):
         # initialize drive speed and turn speed
         self.drive_speed_in = dead
         self.turn_speed_in  = dead
+
+        # initialize drive switch and kill switch
+        self.drive_switch_trigger = min   # min -> disarmd
+        self.kill_switch_trigger = max  # kill system
 
         # Manual vs automatic control
         self.manual = True
@@ -88,6 +100,8 @@ class DriveControllerHardware(DriveControllerBase):
     def rc_listener_callback(self, msg):
         self.drive_speed_in  = msg.values[pitch_channel]
         self.turn_speed_in   = msg.values[roll_channel]
+        self.drive_switch_trigger = msg.values[drive_switch_channel]   # min -> disarmd
+        self.kill_switch_trigger = msg.values[kill_switch_channel]
 
         # set manual or automatic control of tilt angle
         if msg.values[offboard_channel] == max:
@@ -128,30 +142,34 @@ class DriveControllerHardware(DriveControllerBase):
         self.dxl_packetHandler.write4ByteTxRx(self.dxl_portHandler, left_dxl_id, goal_velocity_address, speed)
 
     def update(self):
-        print("self.manual: ", self.manual)
-        if (self.manual):
-            # manual control of driving
-            # self.drive_speed_in = self.drive_speed_in + 1
-            # self.turn_speed_in = self.turn_speed_in + 1
-            # if self.drive_speed_in > max:
-            #     self.drive_speed_in = min
-            #     self.turn_speed_in = min
+        # print("self.manual: ", self.manual)
+        if(self.drive_switch_trigger == dead and self.kill_switch_trigger == min):
+            if (self.manual):
+                # manual control of driving
+                # self.drive_speed_in = self.drive_speed_in + 1
+                # self.turn_speed_in = self.turn_speed_in + 1
+                # if self.drive_speed_in > max:
+                #     self.drive_speed_in = min
+                #     self.turn_speed_in = min
 
-            lin_vel = self.map_speed(self.normalize(self.drive_speed_in))
-            ang_vel = self.map_speed(self.normalize(self.turn_speed_in))
+                lin_vel = self.map_speed(self.normalize(self.drive_speed_in))
+                ang_vel = self.map_speed(self.normalize(self.turn_speed_in))
 
-            self.get_logger().info(f"lin_vel, ang_vel: ({(self.normalize(self.drive_speed_in))},{ang_vel})")
+                self.get_logger().info(f"lin_vel, ang_vel: ({(self.normalize(self.drive_speed_in))},{ang_vel})")
 
-            self.move_right_wheel(lin_vel + ang_vel)
-            self.move_left_wheel(lin_vel - ang_vel)
-            # self.move_right_wheel(lin_vel)
-            # self.move_left_wheel(lin_vel)
+                self.move_right_wheel(lin_vel + ang_vel)
+                self.move_left_wheel(lin_vel - ang_vel)
+                # self.move_right_wheel(lin_vel)
+                # self.move_left_wheel(lin_vel)
+            else:
+                # automatic control of driving
+                lin_vel = -self.map_speed(self.drive_speed)
+                ang_vel = -self.map_speed(self.turn_speed)
+                self.move_right_wheel(lin_vel + ang_vel)
+                self.move_left_wheel(lin_vel - ang_vel)
         else:
-            # automatic control of driving
-            lin_vel = -self.map_speed(self.drive_speed)
-            ang_vel = -self.map_speed(self.turn_speed)
-            self.move_right_wheel(lin_vel + ang_vel)
-            self.move_left_wheel(lin_vel - ang_vel)
+            print("pause driving")
+
      
 def main(args=None):
     rclpy.init(args=args)

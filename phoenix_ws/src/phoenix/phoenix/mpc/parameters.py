@@ -14,12 +14,17 @@ params_['max_tilt_in_flight']    = np.deg2rad(50)
 params_['max_tilt_on_land']      = np.deg2rad(85)
 
 # RC channels
-params_['tilt_channel1']          = 5 # add two tilt channal for left and right arm
-params_['tilt_channel2']          = 6
+params_['tilt_channel1']          = 10 # add two tilt channal for left and right arm
+params_['tilt_channel2']          = 9
 
-params_['encoder_channel']       = 11
+params_['tilt_switch_channel']   = 8 # min disable tilt, max enable tilt
+params_['drive_switch_channel']  = 4 # 1514, middle(dead) -> drive mod
+params_['kill_switch_channel']   = 5 # kill Flymod also kill drive and tilt
+
+
+params_['encoder_channel']       = 12
 params_['mpc_channel']           = 7
-params_['offboard_channel']      = 8
+params_['offboard_channel']      = 11
 params_['roll_channel']          = 0
 params_['pitch_channel']         = 1
 params_['throttle_channel']      = 2
